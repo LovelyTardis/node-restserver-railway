@@ -1,17 +1,16 @@
 import express from "express";
 import cors from "cors";
 import userRoutes from "../routes/user.routes.js";
+import { dbConnection } from "../database/config.js";
 
 export default class Server {
   constructor() {
     this.app = express();
-    this.port = process.env.PORT | 8080;
+    this.port = process.env.PORT || 8080;
     this.usersRoutePath = "/api/users";
 
-    // TODO PRODUCTION: CHANGE CORS OPTIONS
-    this.corsOptions = {
-      origin: `http://localhost`,
-    };
+    // Connect to mongodb
+    this.mongoConnect();
 
     // Middlewares
     this.middlewares();
@@ -26,9 +25,18 @@ export default class Server {
     });
   }
 
+  mongoConnect() {
+    dbConnection();
+  }
+
   middlewares() {
     // CORS
-    this.app.use(cors(this.corsOptions));
+    // TODO PRODUCTION: CHANGE CORS OPTIONS
+    this.app.use(
+      cors({
+        origin: `http://localhost`,
+      })
+    );
 
     // Read and parse body
     this.app.use(express.json());
