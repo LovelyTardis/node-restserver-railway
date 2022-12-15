@@ -1,6 +1,6 @@
 import { response, request } from "express";
 import User from "../models/user.js";
-import passwordHash from "../helpers/passwordHash.js";
+import { passwordHash } from "../helpers/passwordHash.js";
 
 export const getUser = (req = request, res = response) => {
   const { q, name = "unknown", apikey } = req.query;
@@ -69,6 +69,8 @@ export const updateUser = async (req = request, res = response) => {
 };
 
 export const deleteUser = async (req = request, res = response) => {
+  const { user: authUser } = req;
+
   const { id } = req.params;
   const query = { state: false };
 
@@ -76,6 +78,7 @@ export const deleteUser = async (req = request, res = response) => {
 
   res.json({
     message: `User with id '${id}' deleted`,
+    authUser,
   });
 };
 
